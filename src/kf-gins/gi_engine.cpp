@@ -154,13 +154,13 @@ void GIEngine::newImuProcess() {
 
 void GIEngine::imuCompensate(IMU &imu) {
 
-    // 补偿IMU零偏误差
-    // compensate the imu bias error
+    // 补偿IMU零偏
+    // compensate the imu bias
     imu.dtheta -= imuerror_.gyrbias * imu.dt;
     imu.dvel -= imuerror_.accbias * imu.dt;
 
-    // 补偿IMU比例因子误差
-    // compensate the imu scale error
+    // 补偿IMU比例因子
+    // compensate the imu scale
     Eigen::Vector3d gyrscale, accscale;
     gyrscale   = Eigen::Vector3d::Ones() + imuerror_.gyrscale;
     accscale   = Eigen::Vector3d::Ones() + imuerror_.accscale;
@@ -385,8 +385,11 @@ void GIEngine::EKFUpdate(Eigen::MatrixXd &dz, Eigen::MatrixXd &H, Eigen::MatrixX
     Eigen::MatrixXd I;
     I.resizeLike(Cov_);
     I.setIdentity();
-    I    = I - K * H;
-    dx_  = dx_ + K * dz;
+    I = I - K * H;
+    // 如果每次更新后都进行状态反馈，则更新前dx_一直为0，下式可以简化为：dx_ = K * dz;
+    // if state feedback is performed after every update, dx_ is always zero before the update
+    // the following formula can be simplified as : dx_ = K * dz;
+    dx_  = dx_ + K * (dz - H * dx_);
     Cov_ = I * Cov_ * I.transpose() + K * R * K.transpose();
 }
 

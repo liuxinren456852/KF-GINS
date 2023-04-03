@@ -44,14 +44,14 @@ English version: “The authors would like to acknowledge the team of Prof. Xiao
 ## 1.程序编译与运行
 ### 1.1 编译环境
 
-KF-GINS项目使用CMake管理，支持在Linux环境和Windows环境下编译。我们建议优先选择Linux环境进行编译。
+KF-GINS项目使用CMake管理，支持在Linux环境，MacOS环境和Windows环境下编译。我们建议优先选择Linux环境进行编译。
 
 KF-GINS编译成功后需要使用配置文件作为参数。程序调试时也需要添加命令行参数。
 
 ### 1.2 依赖库
 除了基本的C++标准库之外，KF-GINS依赖三个库，分别为Eigen3，abseil-cpp和yaml-cpp. 这三个库已经作为三方库加到工程源代码中，不需要使用者单独安装。
 
-### 1.3 Linux编译
+### 1.3 在 Linux内编译
 
 我们建议使用Ubuntu18.04或者Ubuntu20.04系统下g++编译工具进行KF-GINS编译，编译前需安装必要的库：
 ```shell
@@ -79,7 +79,7 @@ cd ~/KF-GINS
 # 等待程序运行结束
 ```
 
-### 1.4 Windows编译
+### 1.4 在 Windows 内编译
 
 Windows环境下一般使用MSVC(Microsoft Visual C/C++)编译器，我们建议在VSCode软件下进行编译。
 
@@ -98,6 +98,50 @@ Windows下需要通过Visual Studio Installer安装MSVC编译器；下载安装V
 # 可执行文件可能在 .\bin\Release 文件夹下生成，则执行命令为:
 # .\bin\Release\KF-GINS.exe .\dataset\kf-gins.yaml
 ```
+
+### 1.5 在 MacOS内编译
+
+在 MacOS 中使用 xcode-select 和 cmake。编译前需安装必要的工具：
+
+```shell
+xcode-select --install
+brew install cmake
+```
+
+配置好自己的编译环境之后，将仓库克隆到本地后并按照如下操作编译KF-GINS：
+
+```shell
+# 克隆仓库
+git clone https://github.com/i2Nav-WHU/KF-GINS.git ~/
+
+# 编译KF-GINS
+cd ~/KF-GINS
+mkdir build && cd build
+
+cmake ../ -DCMAKE_BUILD_TYPE=Release 
+make -j8
+
+# 运行测试数据集
+cd ~/KF-GINS
+./bin/KF-GINS ./dataset/kf-gins.yaml
+
+# 等待程序运行结束
+```
+
+### 1.6 在 VSCode 内调试
+
+Linux 下调试需要安装gdb调试工具：
+```shell
+sudo apt-get install gdb
+```
+
+调试操作如下：
+
+- 选择编译器，打开命令面板(Ctrl+Shift+P)输入"CMake: Select a Kit"，Linux选择gcc编辑器，Windows选择MSVC编译器
+- 设置编译参数，命令面板输入"CMake: Select Variant"，选择 **Debug**
+- 配置CMake，命令面板输入"CMake: Configure"，编译工程，命令面板输入"CMake: Build"
+- 选择调试启动选项，点击VSCode左侧第四个按钮打开“运行和调试”菜单(或快捷键Ctrl+Shift+D)，左侧窗口上方选择“Windows 启动” 或 “Linux gdb 启动”
+- 开始调试，点击左侧窗口上方的 绿色三角符号 开始调试(或快捷键F5调试)
 
 ## 2 KF-GINS使用
 
@@ -151,7 +195,7 @@ Windows下需要通过Visual Studio Installer安装MSVC编译器；下载安装V
 | 6~8  | 三维速度 (北向-东向-地向)     | $m/s$ |
 | 9~11 | 姿态角 (横滚-俯仰-航向) | $deg$ |
 
-- IMU误差文件二进制文件格式(均为double类型)定义为:
+- IMU误差文件文本文件格式(均为double类型)定义为:
 
 | 列数  | 数据描述                 | 单位    |
 | ----- | ------------------------ | ------- |
@@ -161,7 +205,7 @@ Windows下需要通过Visual Studio Installer安装MSVC编译器；下载安装V
 | 8~10  | X-Y-Z轴 陀螺仪比例因子   | $ppm$   |
 | 11~13 | X-Y-Z轴 加速度计比例因子 | $ppm$   |
 
-- 系统状态标准差二进制文件格式(均为double类型)定义为:
+- 系统状态标准差文本文件格式(均为double类型)定义为:
 
 | 列数  | 数据描述               | 单位    |
 | ----- |--------------------| ------- |
